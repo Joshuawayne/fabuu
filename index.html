@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FABU</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'luxury-bg': '#FDFCFB',        // Very light, warm off-white
+                        'luxury-text': '#333333',      // Deep, soft charcoal
+                        'luxury-accent': '#B08D57',    // Muted, elegant gold
+                        'luxury-subtle': '#EAEAEA',    // Light gray for borders, dividers
+                        'luxury-contrast': '#1A1A1A',  // Near black for strong accents if needed
+                        // Keeping old fabu colors for now in case they are needed for specific small elements, but will phase out.
+                        'fabu-teal': '#0C4A6E',
+                        'fabu-gold': '#FACC15', 
+                        'fabu-charcoal': '#374151',
+                        'fabu-peach': '#FFEDD5',
+                        'fabu-ivory': '#FFFAF0',
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        display: ['Poppins', 'sans-serif'], // Can introduce a serif later if desired
+                    },
+                    borderRadius: {
+                        'DEFAULT': '0.25rem', // 4px - subtle rounding
+                        'lg': '0.5rem',       // 8px
+                        'xlarge': '0.75rem',  // 12px - reducing from 1.5rem
+                        'full': '9999px',
+                    },
+                    letterSpacing: {
+                        'tight': '-0.025em',
+                        'normal': '0',
+                        'wide': '0.025em',
+                        'wider': '0.05em',
+                        'widest': '0.1em',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(15px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideInRight: {
+                            '0%': { opacity: '0', transform: 'translateX(30px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1'},
+                        },
+                        marqueeScrollLeft: { // New keyframes for marquee
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-100%)' },
+                        }
+                    },
+                    animation: {
+                        fadeInUp: 'fadeInUp 0.8s ease-out forwards',
+                        slideInRight: 'slideInRight 1s ease-out forwards',
+                        fadeIn: 'fadeIn 0.8s ease-out forwards',
+                        marqueeScrollLeft: 'marqueeScrollLeft 30s linear infinite', // New animation utility
+                    },
+                    boxShadow: {
+                        'subtle': '0 4px 12px rgba(0,0,0,0.05)',
+                        'md': '0 6px 15px rgba(0,0,0,0.07)',
+                        'lg': '0 10px 25px rgba(0,0,0,0.1)', // Slightly increased intensity for hover
+                        'none': 'none',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            html {
+                scroll-behavior: smooth;
+            }
+            body {
+                @apply font-sans text-luxury-text bg-luxury-bg antialiased;
+            }
+            h1, h2, h3, h4, h5, h6 {
+                @apply font-display text-luxury-text;
+            }
+        }
+        @layer utilities {
+          /* Custom utility for subtle text shadow for luxury feel */
+          .text-shadow-subtle {
+            text-shadow: 0px 1px 3px rgba(0,0,0,0.1);
+          }
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "react/jsx-runtime": "https://esm.sh/react@^19.1.0/jsx-runtime",
+    "framer-motion": "https://esm.sh/framer-motion@^11",
+    "gsap": "https://esm.sh/gsap@3.12.5",
+    "gsap/ScrollTrigger": "https://esm.sh/gsap@3.12.5/ScrollTrigger",
+    "@google/genai": "https://esm.sh/@google/genai@0.15.0",
+    "@/App": "./App.tsx",
+    "gsap/": "https://esm.sh/gsap@^3.13.0/"
+  }
+}
+</script>
+</head>
+<body class="font-sans">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+</body>
+</html>
