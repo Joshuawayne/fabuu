@@ -35,7 +35,7 @@ const OurStoryPage: React.FC = () => {
       <div className="relative pt-28 md:pt-36 pb-20 md:pb-24 bg-luxury-bg text-center">
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-10" 
-          style={{ backgroundImage: `url('https://res.cloudinary.com/ddfa67uba/image/upload/v1749988210/logo_nwjriu.jpg')` }} 
+          style={{ backgroundImage: `url('https://res.cloudinary.com/ddfa67uba/image/upload/v1749995186/y_fzgwpw.jpg')` }} 
         ></div>
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-semibold text-luxury-text mb-4 animate-fadeInUp" style={{animationDelay: '0.1s'}}>
