@@ -6,13 +6,6 @@ import { APP_NAME } from '../constants';
 import Button from './Button'; 
 import SplitText from './SplitText'; 
 
-// === WHAT'S NEW: Image Imports ===
-
-// Update these imports in OurStoryPage.tsx:
-import heroBgTexture from '@/assets/images/craftsmanship.gif';
-import genesisSketchImg from '@/assets/images/r.jpg'; // Use different images
-import craftsmanshipImg from '@/assets/images/beauty.gif'; // Use different images
-
 const OurStoryPage: React.FC = () => {
   const genesisParagraph1 = `At ${APP_NAME}, we champion the belief that fashion is an intimate form of artistry and self-expression. Our journey began with a singular dedication: to merge distinctive design with mindful creation. We envisioned a brand where each piece would not only be visually captivating but also a joy to wear and a treasure to cherish for years to come.`;
   const genesisParagraph2 = `This vision was born from a desire to move beyond fleeting trends, to cultivate a collection that speaks to enduring style and personal narrative. ${APP_NAME} is more than fabric and thread; it's a commitment to empowering individuality through sophisticated, thoughtfully crafted apparel.`;
@@ -42,8 +35,7 @@ const OurStoryPage: React.FC = () => {
       <div className="relative pt-28 md:pt-36 pb-20 md:pb-24 bg-luxury-bg text-center">
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-10" 
-          // === UPDATED: Using the imported image variable ===
-          style={{ backgroundImage: `url(${heroBgTexture})` }} 
+          style={{ backgroundImage: `url('https://res.cloudinary.com/ddfa67uba/image/upload/v1749988210/logo_nwjriu.jpg')` }} 
         ></div>
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-semibold text-luxury-text mb-4 animate-fadeInUp" style={{animationDelay: '0.1s'}}>
@@ -66,8 +58,7 @@ const OurStoryPage: React.FC = () => {
               </div>
               <div className="md:col-span-2 animate-fadeInUp" style={{animationDelay: '0.3s'}}>
                   <img 
-                    // === UPDATED: Using the imported image variable ===
-                    src={genesisSketchImg} 
+                    src="https://res.cloudinary.com/ddfa67uba/image/upload/v1749988294/logo1_cncep6.jpg" 
                     alt="Artistic sketch representing FABU's design inspiration" 
                     className="rounded-lg shadow-subtle object-cover w-full h-auto aspect-[4/5]" 
                   />
@@ -81,8 +72,7 @@ const OurStoryPage: React.FC = () => {
             <div className="grid md:grid-cols-5 gap-8 md:gap-12 items-center mb-16 md:mb-20">
               <div className="md:col-span-2 md:order-last animate-fadeInUp" style={{animationDelay: '0.3s'}}>
                   <img 
-                    // === UPDATED: Using the imported image variable ===
-                    src={craftsmanshipImg} 
+                    src="https://res.cloudinary.com/ddfa67uba/image/upload/v1749988890/collection_cdtgkl.jpg" 
                     alt="Close-up of luxurious fabric or detailed craftsmanship" 
                     className="rounded-lg shadow-subtle object-cover w-full h-auto aspect-[4/5]" 
                   />

@@ -1,8 +1,7 @@
-
 import React, { useState } from 'react';
 import Button from './Button';
 import SplitText from './SplitText';
-import coonectImg from '@/assets/images/coonect.jpg';
+
 // Removed ChatbotWidget import as it will be global
 
 // Minimalist Social Icon Placeholders (same as Footer, consider centralizing if used often)
@@ -18,7 +17,6 @@ const MinimalSocialIconContact: React.FC<{ platform: string, className?: string 
     </svg>
   );
 };
-
 
 const ContactPage: React.FC = () => {
   const [formState, setFormState] = useState({ name: '', email: '', message: '' });
@@ -112,7 +110,7 @@ const ContactPage: React.FC = () => {
              {/* Atmospheric Image */}
             <div className="hidden lg:block aspect-[4/5] rounded-lg overflow-hidden shadow-lg mb-12">
               <img 
-                src={coonectImg}
+                src="https://res.cloudinary.com/ddfa67uba/image/upload/v1749990421/coonect_xivjtp.jpg"
                 alt="Minimalist workspace aesthetic" 
                 className="w-full h-full object-cover"
               />
