@@ -72,7 +72,7 @@ const OurStoryPage: React.FC = () => {
             <div className="grid md:grid-cols-5 gap-8 md:gap-12 items-center mb-16 md:mb-20">
               <div className="md:col-span-2 md:order-last animate-fadeInUp" style={{animationDelay: '0.3s'}}>
                   <img 
-                    src="https://res.cloudinary.com/ddfa67uba/image/upload/v1749988890/collection_cdtgkl.jpg" 
+                     src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOG90cXF6aDNjeGw2ODYwOHpmZDJ6bTBveTM1c2Uza2IxY3hsaGo0ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/U4QZ1uheMn4og60aiX/giphy.gif" 
                     alt="Close-up of luxurious fabric or detailed craftsmanship" 
                     className="rounded-lg shadow-subtle object-cover w-full h-auto aspect-[4/5]" 
                   />
