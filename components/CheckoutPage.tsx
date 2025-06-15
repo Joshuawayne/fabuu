@@ -4,6 +4,7 @@ import { CartItem } from '../types';
 import Button from './Button';
 import Spinner from './icons/Spinner'; 
 import CreditCardIcon from './icons/CreditCardIcon'; 
+import { TAX_RATE } from '../constants';
 
 interface CheckoutPageProps {
   cartItems: CartItem[];
@@ -32,10 +33,10 @@ type ErrorKeys = keyof FormData | 'payment' | 'emailContact';
 const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, onPlaceOrder }) => {
   const [contactInfo, setContactInfo] = useState({ email: '' });
   const [shippingAddress, setShippingAddress] = useState<FormData>({
-    name: '', email: '', addressLine1: '', addressLine2: '', city: '', postalCode: '', country: 'United States'
+    name: '', email: '', addressLine1: '', addressLine2: '', city: '', postalCode: '', country: 'Kenya' // Default to Kenya
   });
   const [billingAddress, setBillingAddress] = useState<FormData>({
-    name: '', email: '', addressLine1: '', addressLine2: '', city: '', postalCode: '', country: 'United States'
+    name: '', email: '', addressLine1: '', addressLine2: '', city: '', postalCode: '', country: 'Kenya' // Default to Kenya
   });
   const [paymentDetails, setPaymentDetails] = useState<PaymentData>({
     cardNumber: '', expiryDate: '', cvc: ''
@@ -59,15 +60,12 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, onPlaceOrder }) 
       ...prev,
       [field]: e.target.value,
     }));
-    // If errorKeyToClear is provided, use it. Otherwise, assume field name is the error key.
-    // This is safe for FormData fields as keyof FormData is part of ErrorKeys.
     const keyToUseForErrorClearing = errorKeyToClear || (field as ErrorKeys);
     if (errors[keyToUseForErrorClearing]) {
       setErrors(prev => ({ ...prev, [keyToUseForErrorClearing]: undefined }));
     }
   };
   
-  // Specific handler for contactInfo.email as its error key is 'emailContact'
   const handleContactEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setContactInfo({ email: e.target.value });
     if (errors.emailContact) {
@@ -81,31 +79,30 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, onPlaceOrder }) 
   }, [cartItems]);
 
   const shippingCost = 0; // Placeholder
-  const taxAmount = subtotal * 0.00; // Placeholder 0% tax
+  const taxAmount = subtotal * TAX_RATE;
   const grandTotal = subtotal + shippingCost + taxAmount;
 
   const validateForm = (): boolean => {
     const newErrors: Partial<Record<ErrorKeys, string>> = {};
     if (!contactInfo.email.trim() || !/\S+@\S+\.\S+/.test(contactInfo.email)) newErrors.emailContact = 'Valid email is required.';
     
-    // Validate shipping address
     if (!shippingAddress.name.trim()) newErrors.name = 'Full name is required.';
     if (!shippingAddress.addressLine1.trim()) newErrors.addressLine1 = 'Address is required.';
     if (!shippingAddress.city.trim()) newErrors.city = 'City is required.';
     if (!shippingAddress.postalCode.trim()) newErrors.postalCode = 'Postal code is required.';
     if (!shippingAddress.country.trim()) newErrors.country = 'Country is required.';
-    // Note: shippingAddress.email is in FormData, but not explicitly in the form UI. If added, validate it.
 
     if (!useSameAddressForBilling) {
-      if (!billingAddress.name.trim()) newErrors.name = 'Billing full name is required.'; // Could use specific keys like billingName
+      // Validate billing address fields only if they are different
+      // Use distinct error keys if necessary, or ensure general keys are cleared properly
+      if (!billingAddress.name.trim()) newErrors.name = 'Billing full name is required.'; // Could collide if not careful
       if (!billingAddress.addressLine1.trim()) newErrors.addressLine1 = 'Billing address is required.';
       if (!billingAddress.city.trim()) newErrors.city = 'Billing city is required.';
       if (!billingAddress.postalCode.trim()) newErrors.postalCode = 'Billing postal code is required.';
       if (!billingAddress.country.trim()) newErrors.country = 'Billing country is required.';
     }
     
-    // Basic mock payment validation (presence)
-    if (!paymentDetails.cardNumber.trim()) newErrors.payment = 'Card number is required.';
+    if (!paymentDetails.cardNumber.trim().replace(/\s/g, '')) newErrors.payment = 'Card number is required.';
     else if (!paymentDetails.expiryDate.trim()) newErrors.payment = 'Expiry date is required.';
     else if (!paymentDetails.cvc.trim()) newErrors.payment = 'CVC is required.';
 
@@ -118,7 +115,6 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, onPlaceOrder }) 
     if (!validateForm()) return;
 
     setIsProcessingOrder(true);
-    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000));
     onPlaceOrder(cartItems);
     setIsProcessingOrder(false);
@@ -140,6 +136,26 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, onPlaceOrder }) 
     return errors[field] ? <p className="text-red-500 text-xs mt-1">{errors[field]}</p> : null;
   };
 
+  const scrollbarStyles = `
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #EAEAEA; /* luxury-subtle approx */
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #B08D57; /* luxury-accent */
+    }
+    /* For Firefox */
+    .custom-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: #B08D57 transparent;
+    }
+  `;
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 animate-fadeIn">
@@ -164,32 +180,31 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, onPlaceOrder }) 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
               <div>
                 <label htmlFor="name" className="block text-xs font-medium text-luxury-text/70 mb-1.5 tracking-wider uppercase">Full Name</label>
-                <input type="text" id="name" value={shippingAddress.name} onChange={handleInputChange(setShippingAddress, 'name')} className="w-full bg-white border-luxury-subtle rounded p-3 focus:ring-1 focus:ring-luxury-accent focus:border-luxury-accent outline-none text-luxury-text text-sm placeholder:text-luxury-text/50" />
+                <input type="text" id="name" value={shippingAddress.name} onChange={handleInputChange(setShippingAddress, 'name', 'name')} className="w-full bg-white border-luxury-subtle rounded p-3 focus:ring-1 focus:ring-luxury-accent focus:border-luxury-accent outline-none text-luxury-text text-sm placeholder:text-luxury-text/50" />
                 {renderError('name')}
               </div>
               <div> 
                 <label htmlFor="addressLine1" className="block text-xs font-medium text-luxury-text/70 mb-1.5 tracking-wider uppercase">Address Line 1</label>
-                <input type="text" id="addressLine1" value={shippingAddress.addressLine1} onChange={handleInputChange(setShippingAddress, 'addressLine1')} className="w-full bg-white border-luxury-subtle rounded p-3 focus:ring-1 focus:ring-luxury-accent focus:border-luxury-accent outline-none text-luxury-text text-sm placeholder:text-luxury-text/50" />
+                <input type="text" id="addressLine1" value={shippingAddress.addressLine1} onChange={handleInputChange(setShippingAddress, 'addressLine1', 'addressLine1')} className="w-full bg-white border-luxury-subtle rounded p-3 focus:ring-1 focus:ring-luxury-accent focus:border-luxury-accent outline-none text-luxury-text text-sm placeholder:text-luxury-text/50" />
                 {renderError('addressLine1')}
               </div>
               <div className="md:col-span-2">
                 <label htmlFor="addressLine2" className="block text-xs font-medium text-luxury-text/70 mb-1.5 tracking-wider uppercase">Address Line 2 <span className="text-luxury-text/50 normal-case">(Optional)</span></label>
                 <input type="text" id="addressLine2" value={shippingAddress.addressLine2} onChange={handleInputChange(setShippingAddress, 'addressLine2')} className="w-full bg-white border-luxury-subtle rounded p-3 focus:ring-1 focus:ring-luxury-accent focus:border-luxury-accent outline-none text-luxury-text text-sm placeholder:text-luxury-text/50" />
-                {renderError('addressLine2')}
               </div>
               <div>
                 <label htmlFor="city" className="block text-xs font-medium text-luxury-text/70 mb-1.5 tracking-wider uppercase">City</label>
-                <input type="text" id="city" value={shippingAddress.city} onChange={handleInputChange(setShippingAddress, 'city')} className="w-full bg-white border-luxury-subtle rounded p-3 focus:ring-1 focus:ring-luxury-accent focus:border-luxury-accent outline-none text-luxury-text text-sm placeholder:text-luxury-text/50" />
+                <input type="text" id="city" value={shippingAddress.city} onChange={handleInputChange(setShippingAddress, 'city', 'city')} className="w-full bg-white border-luxury-subtle rounded p-3 focus:ring-1 focus:ring-luxury-accent focus:border-luxury-accent outline-none text-luxury-text text-sm placeholder:text-luxury-text/50" />
                 {renderError('city')}
               </div>
               <div>
                 <label htmlFor="postalCode" className="block text-xs font-medium text-luxury-text/70 mb-1.5 tracking-wider uppercase">Postal Code</label>
-                <input type="text" id="postalCode" value={shippingAddress.postalCode} onChange={handleInputChange(setShippingAddress, 'postalCode')} className="w-full bg-white border-luxury-subtle rounded p-3 focus:ring-1 focus:ring-luxury-accent focus:border-luxury-accent outline-none text-luxury-text text-sm placeholder:text-luxury-text/50" />
+                <input type="text" id="postalCode" value={shippingAddress.postalCode} onChange={handleInputChange(setShippingAddress, 'postalCode', 'postalCode')} className="w-full bg-white border-luxury-subtle rounded p-3 focus:ring-1 focus:ring-luxury-accent focus:border-luxury-accent outline-none text-luxury-text text-sm placeholder:text-luxury-text/50" />
                 {renderError('postalCode')}
               </div>
               <div className="md:col-span-2">
                 <label htmlFor="country" className="block text-xs font-medium text-luxury-text/70 mb-1.5 tracking-wider uppercase">Country</label>
-                <input type="text" id="country" value={shippingAddress.country} onChange={handleInputChange(setShippingAddress, 'country')} className="w-full bg-white border-luxury-subtle rounded p-3 focus:ring-1 focus:ring-luxury-accent focus:border-luxury-accent outline-none text-luxury-text text-sm placeholder:text-luxury-text/50" />
+                <input type="text" id="country" value={shippingAddress.country} onChange={handleInputChange(setShippingAddress, 'country', 'country')} className="w-full bg-white border-luxury-subtle rounded p-3 focus:ring-1 focus:ring-luxury-accent focus:border-luxury-accent outline-none text-luxury-text text-sm placeholder:text-luxury-text/50" />
                 {renderError('country')}
               </div>
             </div>
@@ -212,32 +227,31 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, onPlaceOrder }) 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
                 <div>
                     <label htmlFor="billingName" className="block text-xs font-medium text-luxury-text/70 mb-1.5 tracking-wider uppercase">Full Name</label>
-                    <input type="text" id="billingName" value={billingAddress.name} onChange={handleInputChange(setBillingAddress, 'name')} className="w-full bg-white border-luxury-subtle rounded p-3" />
+                    <input type="text" id="billingName" value={billingAddress.name} onChange={handleInputChange(setBillingAddress, 'name', 'name')} className="w-full bg-white border-luxury-subtle rounded p-3" />
                     {renderError('name')} 
                 </div>
                  <div> 
                     <label htmlFor="billingAddressLine1" className="block text-xs font-medium text-luxury-text/70 mb-1.5 tracking-wider uppercase">Address Line 1</label>
-                    <input type="text" id="billingAddressLine1" value={billingAddress.addressLine1} onChange={handleInputChange(setBillingAddress, 'addressLine1')} className="w-full bg-white border-luxury-subtle rounded p-3" />
+                    <input type="text" id="billingAddressLine1" value={billingAddress.addressLine1} onChange={handleInputChange(setBillingAddress, 'addressLine1', 'addressLine1')} className="w-full bg-white border-luxury-subtle rounded p-3" />
                      {renderError('addressLine1')}
                 </div>
-                {/* Add other billing fields as needed, similar to shipping, e.g., city, postalCode, country */}
                  <div className="md:col-span-2">
                     <label htmlFor="billingAddressLine2" className="block text-xs font-medium text-luxury-text/70 mb-1.5 tracking-wider uppercase">Address Line 2 <span className="text-luxury-text/50 normal-case">(Optional)</span></label>
                     <input type="text" id="billingAddressLine2" value={billingAddress.addressLine2} onChange={handleInputChange(setBillingAddress, 'addressLine2')} className="w-full bg-white border-luxury-subtle rounded p-3" />
                 </div>
                 <div>
                     <label htmlFor="billingCity" className="block text-xs font-medium text-luxury-text/70 mb-1.5 tracking-wider uppercase">City</label>
-                    <input type="text" id="billingCity" value={billingAddress.city} onChange={handleInputChange(setBillingAddress, 'city')} className="w-full bg-white border-luxury-subtle rounded p-3" />
+                    <input type="text" id="billingCity" value={billingAddress.city} onChange={handleInputChange(setBillingAddress, 'city', 'city')} className="w-full bg-white border-luxury-subtle rounded p-3" />
                     {renderError('city')}
                 </div>
                 <div>
                     <label htmlFor="billingPostalCode" className="block text-xs font-medium text-luxury-text/70 mb-1.5 tracking-wider uppercase">Postal Code</label>
-                    <input type="text" id="billingPostalCode" value={billingAddress.postalCode} onChange={handleInputChange(setBillingAddress, 'postalCode')} className="w-full bg-white border-luxury-subtle rounded p-3" />
+                    <input type="text" id="billingPostalCode" value={billingAddress.postalCode} onChange={handleInputChange(setBillingAddress, 'postalCode', 'postalCode')} className="w-full bg-white border-luxury-subtle rounded p-3" />
                     {renderError('postalCode')}
                 </div>
                 <div className="md:col-span-2">
                     <label htmlFor="billingCountry" className="block text-xs font-medium text-luxury-text/70 mb-1.5 tracking-wider uppercase">Country</label>
-                    <input type="text" id="billingCountry" value={billingAddress.country} onChange={handleInputChange(setBillingAddress, 'country')} className="w-full bg-white border-luxury-subtle rounded p-3" />
+                    <input type="text" id="billingCountry" value={billingAddress.country} onChange={handleInputChange(setBillingAddress, 'country', 'country')} className="w-full bg-white border-luxury-subtle rounded p-3" />
                     {renderError('country')}
                 </div>
               </div>
@@ -290,27 +304,27 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, onPlaceOrder }) 
                         <p className="text-luxury-text/70">Qty: {item.quantity}</p>
                     </div>
                   </div>
-                  <p className="text-luxury-text">${(item.product.price * item.quantity).toFixed(2)}</p>
+                  <p className="text-luxury-text">KSH {(item.product.price * item.quantity).toFixed(2)}</p>
                 </div>
               ))}
             </div>
             <div className="space-y-2 py-4 border-t border-b border-luxury-subtle">
               <div className="flex justify-between text-sm text-luxury-text/80">
                 <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span>KSH {subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm text-luxury-text/80">
                 <span>Shipping</span>
-                <span>${shippingCost.toFixed(2)}</span>
+                <span>KSH {shippingCost.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm text-luxury-text/80">
-                <span>Taxes (Est.)</span>
-                <span>${taxAmount.toFixed(2)}</span>
+                <span>Taxes ({(TAX_RATE * 100).toFixed(0)}%)</span>
+                <span>KSH {taxAmount.toFixed(2)}</span>
               </div>
             </div>
             <div className="flex justify-between font-semibold text-lg text-luxury-text mt-4 mb-8">
               <span>Total</span>
-              <span>${grandTotal.toFixed(2)}</span>
+              <span>KSH {grandTotal.toFixed(2)}</span>
             </div>
             <Button
               onClick={handlePlaceOrder}
@@ -330,21 +344,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, onPlaceOrder }) 
           </div>
         </div>
       </div>
-       <style>{`
-          .custom-scrollbar::-webkit-scrollbar {
-            width: 5px;
-          }
-          .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-          }
-          .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #EAEAEA; /* luxury-subtle */
-            border-radius: 10px;
-          }
-          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #B08D57; /* luxury-accent */
-          }
-        `}</style>
+      <style dangerouslySetInnerHTML={{ __html: scrollbarStyles }} />
     </div>
   );
 };

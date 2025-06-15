@@ -4,7 +4,7 @@ import { CartItem } from '../types';
 import FabuLogo from './icons/FabuLogo';
 import CloseIcon from './icons/CloseIcon';
 import Button from './Button'; 
-import { APP_NAME } from '../constants';
+import { APP_NAME, TAX_RATE } from '../constants';
 
 interface CheckoutReceiptModalProps {
   isOpen: boolean;
@@ -38,8 +38,8 @@ const CheckoutReceiptModal: React.FC<CheckoutReceiptModalProps> = ({
     return orderDetails.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   }, [orderDetails]);
 
-  const shippingCost = 0;
-  const taxAmount = 0;
+  const shippingCost = 0; // Placeholder
+  const taxAmount = subtotal * TAX_RATE;
   const grandTotal = subtotal + shippingCost + taxAmount;
 
   const orderNumber = useMemo(() => `ORD-${Date.now().toString().slice(-8)}`, [orderDetails]); 
@@ -55,107 +55,77 @@ const CheckoutReceiptModal: React.FC<CheckoutReceiptModalProps> = ({
     currentGrandTotal: number
   ): string => {
     let html = `<html><head><title>${APP_NAME} Receipt - ${currentOrderNumber}</title>`;
-    html += `<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">`;
+    html += `<script src="https://cdn.tailwindcss.com"></script>`;
+    html += `<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">`;
     html += `<style>
         body { 
-          font-family: 'Courier Prime', 'Courier New', monospace; /* Monospace for receipt feel */
+          font-family: 'Poppins', sans-serif; 
           margin: 0; 
-          color: #333333; /* luxury-text */
-          font-size: 11pt; /* Slightly smaller for density */
-          background-image: url('https://res.cloudinary.com/ddfa67uba/image/upload/v1749719181/downloaded_image_3_tfa4dq.png');
-          background-size: cover;
-          background-position: center;
-          background-repeat: no-repeat;
-          -webkit-print-color-adjust: exact; /* Important for printing background */
-          print-color-adjust: exact;
+          color: #333333; 
+          font-size: 12px;
+          background-color: #fff;
         }
         .receipt-container { 
           max-width: 800px; 
           margin: 20px auto; 
-          padding: 25px; 
-          background-color: rgba(255, 255, 255, 0.9); /* Slight transparency for background to show through */
+          padding: 15px; 
           border: 1px solid #EAEAEA; 
-          box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+          background-color: #fff; 
         }
-        .poppins-font { font-family: 'Poppins', sans-serif; }
         .text-center { text-align: center; }
         .text-right { text-align: right; }
-        .font-bold { font-weight: 700; } /* Courier Prime bold */
-        .font-semibold { font-weight: 600; } /* Poppins semibold */
-        .font-medium { font-weight: 500; } /* Poppins medium */
+        .font-semibold { font-weight: 600; }
+        .font-medium { font-weight: 500; }
         .mb-1 { margin-bottom: 0.25rem; }
         .mb-2 { margin-bottom: 0.5rem; }
         .mb-4 { margin-bottom: 1rem; }
         .mb-6 { margin-bottom: 1.5rem; }
         .mt-1 { margin-top: 0.25rem; }
         .mt-2 { margin-top: 0.5rem; }
-        .mt-3 { margin-top: 0.75rem; }
         .mt-4 { margin-top: 1rem; }
         .mt-6 { margin-top: 1.5rem; }
         .pt-2 { padding-top: 0.5rem; }
         .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
-        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
-        .text-xs { font-size: 0.85em; } /* Relative to body font-size */
-        .text-sm { font-size: 0.9em; }
-        .text-lg { font-size: 1.2em; }
-        .text-xl { font-size: 1.4em; }
-        .text-2xl { font-size: 1.6em; }
+        .text-xs { font-size: 0.75rem; }
+        .text-sm { font-size: 0.875rem; }
+        .text-base { font-size: 1rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
         .border-b { border-bottom-width: 1px; }
         .border-t { border-top-width: 1px; }
         .border-dashed { border-style: dashed; }
-        .border-neutral-300 { border-color: #cccccc; } 
-        .border-neutral-400 { border-color: #aaaaaa; } 
-        .text-neutral-500 { color: #666666; } 
-        .text-neutral-600 { color: #555555; } 
-        .text-neutral-700 { color: #444444; } 
+        .border-neutral-300 { border-color: #D1D5DB; }
+        .border-neutral-400 { border-color: #9CA3AF; }
+        .text-neutral-500 { color: #6B7280; }
+        .text-neutral-600 { color: #4B5563; }
+        .text-neutral-700 { color: #374151; }
         .text-luxury-text { color: #333333; }
-        .text-luxury-accent { color: #B08D57; }
-        table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; margin-bottom: 0.5rem; }
-        th, td { padding: 6px 4px; text-align: left; }
-        th { border-bottom: 1px solid #555555; font-family: 'Poppins', sans-serif; font-weight:500; text-transform:uppercase; font-size: 0.8em;}
-        td { border-bottom: 1px dashed #cccccc; font-size: 0.95em; }
-        tr:last-child td { border-bottom: none; }
-        .fabu-logo-text { 
-          font-family: 'Poppins', sans-serif; 
-          font-size: 2.5em; /* Larger logo text */
-          font-weight: 600; 
-          letter-spacing: 0.075em; 
-          color: #333333; 
-          display: inline-block;
-        }
-        .fabu-logo-accent-dot { 
-          display: inline-block; 
-          width: 0.25em; /* Scaled with font size */
-          height: 0.25em; 
-          background-color: #B08D57; 
-          border-radius: 50%; 
-          margin-left: 0.15em; 
-          vertical-align: middle; /* Align better with text */
-        }
-        .summary-line span:first-child { display: inline-block; min-width: 100px; } /* For alignment */
-        .summary-line span:last-child { font-weight: 700; } /* Courier Prime bold */
-        .grand-total-line { border-top: 1px solid #555555 !important; font-size: 1.1em; }
-        .grand-total-line span:last-child { font-weight: 700; font-size: 1.15em; }
-
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 8px; text-align: left; }
+        th { border-bottom: 2px solid #EAEAEA; }
+        td { border-bottom: 1px dotted #EAEAEA; }
+        .logo-text { font-size: 28px; font-weight: 600; letter-spacing: 0.05em; color: #333333; }
+        .logo-accent-dot { display: inline-block; width: 8px; height: 8px; background-color: #B08D57; border-radius: 50%; margin-left: 5px; }
         @media print {
-          body { margin: 0; font-size: 10pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; background-image: url('https://res.cloudinary.com/ddfa67uba/image/upload/v1749719181/downloaded_image_3_tfa4dq.png') !important; }
-          .receipt-container { border: none; box-shadow: none; padding: 20px; margin: 0 auto; width: 100%; max-width: 100%; background-color: rgba(255, 255, 255, 0.85) !important; }
+          body { margin: 0; font-size: 10pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .receipt-container { border: none; box-shadow: none; padding: 0; margin: 0 auto; width: 100%; max-width: 100%; }
           .no-print { display: none !important; }
         }
       </style></head><body>`;
 
     html += `<div class="receipt-container">`;
     // Header
-    html += `<div class="text-center mb-4 pt-2">
-               <div class="fabu-logo-text">${APP_NAME}<span class="fabu-logo-accent-dot"></span></div>
-               <h2 class="text-xl poppins-font font-semibold text-luxury-text mt-3">THANK YOU FOR YOUR ORDER!</h2>
+    html += `<div class="text-center mb-6 pt-4">
+               <div class="logo-text">${APP_NAME}<span class="logo-accent-dot"></span></div>
+               <h2 class="text-xl sm:text-2xl font-semibold tracking-wider text-luxury-text mt-2">THANK YOU FOR YOUR ORDER!</h2>
                <p class="text-xs text-neutral-600 mt-1">Order #${currentOrderNumber}</p>
                <p class="text-xs text-neutral-500">${currentOrderDate}</p>
              </div>`;
     
     html += `<div class="border-t border-b border-dashed border-neutral-300 my-4 py-3 text-xs text-neutral-600">
-               <p><span class="font-bold text-neutral-700">Billed To:</span> Valued FABU Customer</p>
-               <p><span class="font-bold text-neutral-700">Shipping To:</span> Your Confirmed Address</p>
+               <p><span class="font-medium text-neutral-700">Billed To:</span> Valued FABU Customer</p>
+               <p><span class="font-medium text-neutral-700">Shipping To:</span> Your Confirmed Address</p>
            </div>`;
 
     // Items
@@ -169,21 +139,21 @@ const CheckoutReceiptModal: React.FC<CheckoutReceiptModalProps> = ({
              </thead><tbody>`;
     details.forEach(item => {
       html += `<tr>
-                 <td class="poppins-font font-medium text-sm">${item.product.name}</td>
+                 <td>${item.product.name}</td>
                  <td class="text-center">${item.quantity}</td>
-                 <td class="text-right">$${item.product.price.toFixed(2)}</td>
-                 <td class="text-right font-bold">$${(item.product.price * item.quantity).toFixed(2)}</td>
+                 <td class="text-right">KSH ${item.product.price.toFixed(2)}</td>
+                 <td class="text-right font-medium">KSH ${(item.product.price * item.quantity).toFixed(2)}</td>
                </tr>`;
     });
     html += `</tbody></table>`;
 
     // Summary
-    html += `<div class="mt-auto pt-3 border-t border-dashed border-neutral-300 space-y-1 text-sm text-right">
-               <div class="summary-line"><span>Subtotal:</span> <span>$${currentSubtotal.toFixed(2)}</span></div>
-               <div class="summary-line text-neutral-600"><span>Shipping:</span> <span>$${currentShipping.toFixed(2)}</span></div>
-               <div class="summary-line text-neutral-600"><span>Tax (0%):</span> <span>$${currentTax.toFixed(2)}</span></div>
-               <div class="summary-line grand-total-line text-luxury-text pt-2 mt-2">
-                 <span class="font-bold poppins-font">Grand Total:</span> <span class="text-lg">$${currentGrandTotal.toFixed(2)}</span>
+    html += `<div class="mt-auto pt-4 border-t border-dashed border-neutral-300 space-y-1 text-sm text-right">
+               <div><span>Subtotal:</span> <span class="font-medium">KSH ${currentSubtotal.toFixed(2)}</span></div>
+               <div class="text-neutral-600"><span>Shipping:</span> <span class="font-medium">KSH ${currentShipping.toFixed(2)}</span></div>
+               <div class="text-neutral-600"><span>Tax (${(TAX_RATE * 100).toFixed(0)}%):</span> <span class="font-medium">KSH ${currentTax.toFixed(2)}</span></div>
+               <div class="font-semibold text-base sm:text-lg text-luxury-text border-t border-neutral-400 pt-2 mt-2">
+                 <span>Grand Total:</span> <span class="font-medium">KSH ${currentGrandTotal.toFixed(2)}</span>
                </div>
              </div>`;
 
@@ -191,7 +161,7 @@ const CheckoutReceiptModal: React.FC<CheckoutReceiptModalProps> = ({
     html += `<div class="text-center mt-6 text-xs text-neutral-600">
                <p>A confirmation email has been (not really) sent to your address.</p>
                <p class="mt-1">Thank you for shopping with ${APP_NAME}!</p>
-               <p class="mt-1 poppins-font font-medium">${APP_NAME}.com</p>
+               <p class="mt-1">${APP_NAME}.com</p>
              </div>`;
     
     html += `</div>`; // end receipt-container
@@ -211,15 +181,15 @@ const CheckoutReceiptModal: React.FC<CheckoutReceiptModalProps> = ({
     receiptText += `--------------------------------------------------\n`;
     orderDetails.forEach(item => {
       receiptText += `${item.product.name}\n`;
-      receiptText += `  Qty: ${item.quantity} x $${item.product.price.toFixed(2)}\n`;
-      receiptText += `  Total: $${(item.product.price * item.quantity).toFixed(2)}\n\n`;
+      receiptText += `  Qty: ${item.quantity} x KSH ${item.product.price.toFixed(2)}\n`;
+      receiptText += `  Total: KSH ${(item.product.price * item.quantity).toFixed(2)}\n\n`;
     });
     receiptText += `--------------------------------------------------\n`;
-    receiptText += `Subtotal: $${subtotal.toFixed(2)}\n`;
-    receiptText += `Shipping: $${shippingCost.toFixed(2)}\n`;
-    receiptText += `Tax (0%): $${taxAmount.toFixed(2)}\n`;
+    receiptText += `Subtotal: KSH ${subtotal.toFixed(2)}\n`;
+    receiptText += `Shipping: KSH ${shippingCost.toFixed(2)}\n`;
+    receiptText += `Tax (${(TAX_RATE * 100).toFixed(0)}%): KSH ${taxAmount.toFixed(2)}\n`;
     receiptText += `--------------------------------------------------\n`;
-    receiptText += `GRAND TOTAL: $${grandTotal.toFixed(2)}\n\n`;
+    receiptText += `GRAND TOTAL: KSH ${grandTotal.toFixed(2)}\n\n`;
     receiptText += `Thank you for shopping with ${APP_NAME}!\n`;
     receiptText += `${APP_NAME}.com\n`;
 
@@ -247,13 +217,13 @@ const CheckoutReceiptModal: React.FC<CheckoutReceiptModalProps> = ({
     );
 
     const iframe = document.createElement('iframe');
-    iframe.style.position = 'absolute';
+    iframe.style.position = 'absolute'; 
     iframe.style.left = '-9999px';
     iframe.style.top = '-9999px';
     iframe.style.width = '1px'; 
     iframe.style.height = '1px';
     iframe.style.border = '0';
-   
+    
     document.body.appendChild(iframe); 
 
     try {
@@ -286,7 +256,6 @@ const CheckoutReceiptModal: React.FC<CheckoutReceiptModalProps> = ({
                 }, 2000); 
             }
         };
-
     } catch (setupError) {
         console.error("Error setting up iframe for printing:", setupError);
         alert("Could not generate PDF view. Downloading as TXT instead.");
@@ -301,6 +270,29 @@ const CheckoutReceiptModal: React.FC<CheckoutReceiptModalProps> = ({
   if (!isOpen || !orderDetails) {
     return null;
   }
+  
+  const scrollbarStyles = `
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.05); /* Slightly transparent track */
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #B08D57; /* luxury-accent */
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #947341; /* Darker accent */
+    }
+    /* For Firefox */
+    .custom-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: #B08D57 rgba(0,0,0,0.05);
+    }
+  `;
+
 
   return (
     <div
@@ -358,8 +350,8 @@ const CheckoutReceiptModal: React.FC<CheckoutReceiptModalProps> = ({
             <div key={item.product.id} className="grid grid-cols-12 gap-x-2 gap-y-1 py-2 text-xs border-b border-dotted border-neutral-300 last:border-b-0">
               <div className="col-span-6 truncate" title={item.product.name}>{item.product.name}</div>
               <div className="col-span-2 text-center">{item.quantity}</div>
-              <div className="col-span-2 text-right">${item.product.price.toFixed(2)}</div>
-              <div className="col-span-2 text-right font-medium">${(item.product.price * item.quantity).toFixed(2)}</div>
+              <div className="col-span-2 text-right">KSH {item.product.price.toFixed(2)}</div>
+              <div className="col-span-2 text-right font-medium">KSH {(item.product.price * item.quantity).toFixed(2)}</div>
             </div>
           ))}
         </div>
@@ -368,19 +360,19 @@ const CheckoutReceiptModal: React.FC<CheckoutReceiptModalProps> = ({
         <div className="mt-auto pt-4 border-t border-dashed border-neutral-300 space-y-1 text-sm">
           <div className="flex justify-between">
             <span>Subtotal:</span>
-            <span>${subtotal.toFixed(2)}</span>
+            <span>KSH {subtotal.toFixed(2)}</span>
           </div>
           <div className="flex justify-between text-neutral-600">
             <span>Shipping:</span>
-            <span>${shippingCost.toFixed(2)}</span>
+            <span>KSH {shippingCost.toFixed(2)}</span>
           </div>
           <div className="flex justify-between text-neutral-600">
-            <span>Tax (0%):</span>
-            <span>${taxAmount.toFixed(2)}</span>
+            <span>Tax ({(TAX_RATE * 100).toFixed(0)}%):</span>
+            <span>KSH {taxAmount.toFixed(2)}</span>
           </div>
           <div className="flex justify-between font-semibold text-base sm:text-lg text-luxury-text border-t border-neutral-400 pt-2 mt-2">
             <span>Grand Total:</span>
-            <span>${grandTotal.toFixed(2)}</span>
+            <span>KSH {grandTotal.toFixed(2)}</span>
           </div>
         </div>
 
@@ -397,22 +389,7 @@ const CheckoutReceiptModal: React.FC<CheckoutReceiptModalProps> = ({
             </Button>
           </div>
         </div>
-        <style>{`
-          .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-          }
-          .custom-scrollbar::-webkit-scrollbar-track {
-            background: rgba(241,241,241,0.5); /* Semi-transparent track */
-            border-radius: 10px;
-          }
-          .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(193,193,193,0.7); /* Semi-transparent thumb */
-            border-radius: 10px;
-          }
-          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: rgba(161,161,161,0.9);
-          }
-        `}</style>
+        <style dangerouslySetInnerHTML={{ __html: scrollbarStyles }} />
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ const HeroSection: React.FC = () => {
       <div className="absolute inset-0 opacity-50 z-0">
         {/* Optional: Very subtle background texture or gradient if desired, or leave clean */}
         {/* Example: <div className="absolute inset-0 bg-gradient-to-br from-luxury-bg via-luxury-subtle/30 to-luxury-bg"></div> */}
+        <div className="absolute inset-0 bg-gradient-to-br from-luxury-bg via-luxury-subtle/30 to-luxury-bg"></div>
       </div>
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

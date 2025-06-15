@@ -93,7 +93,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewReceipt, onAdd
         <h3 id={`product-name-${product.id}`} className="text-lg md:text-xl font-medium text-luxury-text mb-2 truncate group-hover:text-luxury-accent transition-colors">
           {product.name}
         </h3>
-        <p className="text-base font-semibold text-luxury-accent mt-auto mb-4">${product.price.toFixed(2)}</p>
+        <p className="text-base font-semibold text-luxury-accent mt-auto mb-4">KSH {product.price.toFixed(2)}</p>
 
         <div className="space-y-2 mt-auto">
           <Button

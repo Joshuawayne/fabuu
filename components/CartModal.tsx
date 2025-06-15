@@ -44,7 +44,7 @@ const CartModal: React.FC<CartModalProps> = ({
     return cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   }, [cartItems]);
 
-  const grandTotal = subtotal; // Assuming no taxes or shipping for now
+  const grandTotal = subtotal; // Tax calculated at checkout
 
   if (!isOpen) {
     return null;
@@ -97,7 +97,7 @@ const CartModal: React.FC<CartModalProps> = ({
                 />
                 <div className="flex-grow">
                   <h3 className="font-medium text-luxury-text">{item.product.name}</h3>
-                  <p className="text-sm text-luxury-text/70">Price: ${item.product.price.toFixed(2)}</p>
+                  <p className="text-sm text-luxury-text/70">Price: KSH {item.product.price.toFixed(2)}</p>
                   <div className="flex items-center space-x-2 mt-2">
                     <button onClick={() => onUpdateQuantity(item.product.id, item.quantity - 1)} aria-label="Decrease quantity" className="p-1 text-luxury-text/70 hover:text-luxury-accent rounded-full transition-colors">
                       <MinusIcon className="w-4 h-4" />
@@ -110,7 +110,7 @@ const CartModal: React.FC<CartModalProps> = ({
                 </div>
                 <div className="text-right">
                   <p className="font-semibold text-luxury-text">
-                    ${(item.product.price * item.quantity).toFixed(2)}
+                    KSH {(item.product.price * item.quantity).toFixed(2)}
                   </p>
                   <button onClick={() => onRemoveItem(item.product.id)} aria-label="Remove item" className="mt-2 text-luxury-text/60 hover:text-red-500 transition-colors">
                     <TrashIcon className="w-4 h-4" />
@@ -125,11 +125,11 @@ const CartModal: React.FC<CartModalProps> = ({
           <div className="p-6 border-t border-luxury-subtle bg-luxury-bg/50 space-y-4">
             <div className="flex justify-between text-sm text-luxury-text/80">
               <span>Subtotal</span>
-              <span>${subtotal.toFixed(2)}</span>
+              <span>KSH {subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between font-semibold text-lg text-luxury-text">
               <span>Grand Total</span>
-              <span>${grandTotal.toFixed(2)}</span>
+              <span>KSH {grandTotal.toFixed(2)}</span>
             </div>
             <p className="text-xs text-luxury-text/60 text-center">Shipping & taxes calculated at checkout.</p>
             <div className="space-y-3 pt-2">
