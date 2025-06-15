@@ -301,9 +301,7 @@ Currently, this is a conceptual project. If it were open source, contribution gu
 
 ---
 
-## License
 
-(Placeholder) This project could be licensed under the MIT License. See the `LICENSE` file for more details if one were present.
 
 ---
 
