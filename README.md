@@ -2,8 +2,8 @@
 # FABU E-commerce Platform
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/username/repo/main/path/to/fabu-logo-for-readme.svg" alt="FABU Logo" width="150"/> 
-  {/* Developer: Please replace the above src with an actual path to a FABU logo if available, or use the SVG inline. For now, it's a placeholder. */}
+  <img src="https://res.cloudinary.com/ddfa67uba/image/upload/v1749713852/9bee35a0-64d1-4785-8c3c-74920310539a_vtffg0.jpg" width="150"/> 
+  
 </div>
 
 **Timeless Elegance. Modern Expression.**
