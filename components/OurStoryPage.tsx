@@ -58,7 +58,7 @@ const OurStoryPage: React.FC = () => {
               </div>
               <div className="md:col-span-2 animate-fadeInUp" style={{animationDelay: '0.3s'}}>
                   <img 
-                    src="https://res.cloudinary.com/ddfa67uba/image/upload/v1749988294/logo1_cncep6.jpg" 
+                    src="https://res.cloudinary.com/ddfa67uba/image/upload/v1749994313/r_ljbudo.jpg" 
                     alt="Artistic sketch representing FABU's design inspiration" 
                     className="rounded-lg shadow-subtle object-cover w-full h-auto aspect-[4/5]" 
                   />
