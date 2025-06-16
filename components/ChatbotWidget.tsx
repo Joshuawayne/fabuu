@@ -2,8 +2,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { GoogleGenAI, Chat, GenerateContentResponse } from '@google/genai';
 import CloseIcon from './icons/CloseIcon';
-import ChatBubbleIcon from './icons/ChatBubbleIcon'; // Assuming you have this
-import Spinner from './icons/Spinner'; // Assuming you have this
+import ChatBubbleIcon from './icons/ChatBubbleIcon'; 
+import Spinner from './icons/Spinner'; 
 
 interface Message {
   role: 'user' | 'model';
